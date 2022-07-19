@@ -1,12 +1,12 @@
 ﻿# Requirements
 
 ## Unregistered User
-- Register new account
+- [] Register new account
 
 ## Registered User
-- Login (Forgot Password)
-- Manage Todo list (CRUD)
-- See stats by Category
+- [] Login (Forgot Password)
+- [] Manage Todo list (CRUD)
+- [] See stats by Category
 
 
 # Design
