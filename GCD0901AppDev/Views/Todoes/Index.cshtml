@@ -33,7 +33,9 @@
       <td>@item.Status.ToString()</td>
       <td>
         <button class="btn btn-info">Details</button>
-        <button class="btn btn-danger">Delete</button>
+        <a asp-controller="Todoes" asp-action="Delete" asp-route-id=@item.Id class="btn btn-danger"> 
+          Delete
+        </a>
         <button class="btn btn-success">Edit</button>
 
       </td>

@@ -39,5 +39,18 @@ namespace GCD0901AppDev.Controllers
       _context.SaveChanges();
       return RedirectToAction("Index");
     }
+    [HttpGet]
+    public IActionResult Delete(int id)
+    {
+      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      if (todoInDb is null)
+      {
+        return NotFound();
+      }
+
+      _context.Todoes.Remove(todoInDb);
+      _context.SaveChanges();
+      return RedirectToAction("Index");
+    }
   }
 }
