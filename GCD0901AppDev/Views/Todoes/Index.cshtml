@@ -1,8 +1,40 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<Todo>
 
 <h1>Index of Todoes</h1>
-<h2>This is all about todo</h2>
+<div class="form-group">
+<button class="btn btn-primary">Create a new Todo</button>
+</div>
+
+<div class="form-group">
+  <form>
+    <input type="text" placeholder="Search by Category" />
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Description</th>
+      <th scope="col">Created At</th>
+      <th scope="col">Status</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model){
+      <tr>
+      <th scope="row">@item.Id</th>
+      <td>@item.Description</td>
+      <td>@item.CreatedAt.ToShortDateString()</td>
+      <td>@item.Status.ToString()</td>
+      <td>
+        <button class="btn btn-secondary">Details</button>
+        <button class="btn btn-danger">Delete</button>
+      </td>
+    </tr>
+  }
+   
+  </tbody>
+</table>
