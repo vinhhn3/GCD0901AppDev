@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using GCD0901AppDev.Models;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace GCD0901AppDev.Data
 {
@@ -13,5 +11,7 @@ namespace GCD0901AppDev.Data
         : base(options)
     {
     }
+
+    public DbSet<Todo> Todoes { get; set; }
   }
 }
