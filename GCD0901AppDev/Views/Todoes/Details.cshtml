@@ -1,0 +1,19 @@
+﻿@model Todo
+
+<div class="form-group">
+  <a asp-controller="Todoes" asp-action="Index" class="btn btn-primary">
+    Back to Index
+  </a>
+</div>
+
+<div class="card" style="width:200px">
+  <img 
+    class="card-img-top" 
+    src="https://upload.wikimedia.org/wikipedia/commons/6/67/Microsoft_To-Do_icon.png" 
+    alt="Todo image">
+  <div class="card-body">
+    <h4 class="card-title">@Model.Description</h4>
+    <p class="card-text">Created At: @Model.CreatedAt.ToShortDateString()</p>
+    <p class="card-text">Status: @Model.Status.ToString()</p>
+  </div>
+</div>

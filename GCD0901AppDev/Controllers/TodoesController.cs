@@ -81,5 +81,17 @@ namespace GCD0901AppDev.Controllers
 
       return RedirectToAction("Index");
     }
+
+    [HttpGet]
+    public IActionResult Details(int id)
+    {
+      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      if (todoInDb is null)
+      {
+        return NotFound();
+      }
+
+      return View(todoInDb);
+    }
   }
 }
