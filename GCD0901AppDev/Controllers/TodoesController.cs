@@ -52,5 +52,34 @@ namespace GCD0901AppDev.Controllers
       _context.SaveChanges();
       return RedirectToAction("Index");
     }
+
+    [HttpGet]
+    public IActionResult Edit(int id)
+    {
+      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      if (todoInDb is null)
+      {
+        return NotFound();
+      }
+
+      return View(todoInDb);
+    }
+
+    [HttpPost]
+    public IActionResult Edit(Todo todo)
+    {
+      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == todo.Id);
+      if (todoInDb is null)
+      {
+        return BadRequest();
+      }
+
+      todoInDb.Description = todo.Description;
+      todoInDb.Status = todo.Status;
+
+      _context.SaveChanges();
+
+      return RedirectToAction("Index");
+    }
   }
 }
