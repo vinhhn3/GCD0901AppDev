@@ -2,7 +2,9 @@
 
 <h1>Index of Todoes</h1>
 <div class="form-group">
-<button class="btn btn-primary">Create a new Todo</button>
+  <a asp-controller="Todoes" asp-action="Create" class="btn btn-primary">
+    Create a new Todo
+  </a>
 </div>
 
 <div class="form-group">
@@ -30,8 +32,10 @@
       <td>@item.CreatedAt.ToShortDateString()</td>
       <td>@item.Status.ToString()</td>
       <td>
-        <button class="btn btn-secondary">Details</button>
+        <button class="btn btn-info">Details</button>
         <button class="btn btn-danger">Delete</button>
+        <button class="btn btn-success">Edit</button>
+
       </td>
     </tr>
   }
