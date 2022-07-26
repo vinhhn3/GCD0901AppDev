@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GCD0901AppDev.Models
 {
@@ -9,12 +10,14 @@ namespace GCD0901AppDev.Models
   {
     [Key]
     public int Id { get; set; }
-    [Required]
+    [Required(ErrorMessage = "You need to add Description ...")]
     [StringLength(255)]
     public string Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public TodoStatus Status { get; set; } = TodoStatus.Todo;
-
-
+    [Required]
+    [ForeignKey("Category")]
+    public int CategoryId { get; set; }
+    public Category Category { get; set; }
   }
 }

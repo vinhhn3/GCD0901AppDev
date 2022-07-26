@@ -13,5 +13,6 @@ namespace GCD0901AppDev.Data
     }
 
     public DbSet<Todo> Todoes { get; set; }
+    public DbSet<Category> Categories { get; set; }
   }
 }
