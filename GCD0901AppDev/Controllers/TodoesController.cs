@@ -2,6 +2,7 @@
 using GCD0901AppDev.Models;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,9 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Index()
     {
-      IEnumerable<Todo> todoes = _context.Todoes.ToList();
+      IEnumerable<Todo> todoes = _context.Todoes
+        .Include(t => t.Category)
+        .ToList();
       return View(todoes);
     }
 
