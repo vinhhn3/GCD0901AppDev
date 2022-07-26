@@ -30,6 +30,10 @@ namespace GCD0901AppDev.Controllers
     [HttpPost]
     public IActionResult Create(Todo todo)
     {
+      if (!ModelState.IsValid)
+      {
+        return View();
+      }
       var newTodo = new Todo
       {
         Description = todo.Description
