@@ -18,8 +18,18 @@ namespace GCD0901AppDev.Controllers
       _context = context;
     }
     [HttpGet]
-    public IActionResult Index()
+    public IActionResult Index(string category)
     {
+      if (!string.IsNullOrWhiteSpace(category))
+      {
+        var result = _context.Todoes
+          .Include(t => t.Category)
+          .Where(t => t.Category.Description.Equals(category))
+          .ToList();
+
+        return View(result);
+      }
+
       IEnumerable<Todo> todoes = _context.Todoes
         .Include(t => t.Category)
         .ToList();
