@@ -1,5 +1,7 @@
 ﻿using GCD0901AppDev.Enums;
 
+using Microsoft.AspNetCore.Identity;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,5 +21,7 @@ namespace GCD0901AppDev.Models
     [ForeignKey("Category")]
     public int CategoryId { get; set; }
     public Category Category { get; set; }
+    public string UserId { get; set; }
+    public IdentityUser User { get; set; }
   }
 }
