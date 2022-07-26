@@ -31,7 +31,7 @@ namespace GCD0901AppDev.Controllers
         var result = _context.Todoes
           .Include(t => t.Category)
           .Where(t => t.Category.Description.Equals(category)
-             && t.UserId == currentUserId
+              && t.UserId == currentUserId
           )
           .ToList();
 
@@ -81,7 +81,9 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Delete(int id)
     {
-      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      var currentUserId = _userManager.GetUserId(User);
+      var todoInDb = _context.Todoes.SingleOrDefault(
+        t => t.Id == id && t.UserId == currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
@@ -95,7 +97,9 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Edit(int id)
     {
-      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      var currentUserId = _userManager.GetUserId(User);
+      var todoInDb = _context.Todoes.SingleOrDefault(
+        t => t.Id == id && t.UserId == currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
@@ -111,7 +115,9 @@ namespace GCD0901AppDev.Controllers
     [HttpPost]
     public IActionResult Edit(TodoCategoriesViewModel viewModel)
     {
-      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == viewModel.Todo.Id);
+      var currentUserId = _userManager.GetUserId(User);
+      var todoInDb = _context.Todoes.SingleOrDefault(
+        t => t.Id == viewModel.Todo.Id && t.UserId == currentUserId);
       if (todoInDb is null)
       {
         return BadRequest();
@@ -139,9 +145,10 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Details(int id)
     {
+      var currentUserId = _userManager.GetUserId(User);
       var todoInDb = _context.Todoes
         .Include(t => t.Category)
-        .SingleOrDefault(t => t.Id == id);
+        .SingleOrDefault(t => t.Id == id && t.UserId == currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
