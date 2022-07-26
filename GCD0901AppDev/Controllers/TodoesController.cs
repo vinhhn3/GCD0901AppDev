@@ -78,21 +78,36 @@ namespace GCD0901AppDev.Controllers
       {
         return NotFound();
       }
-
-      return View(todoInDb);
+      var viewModel = new TodoCategoriesViewModel
+      {
+        Todo = todoInDb,
+        Categories = _context.Categories.ToList()
+      };
+      return View(viewModel);
     }
 
     [HttpPost]
-    public IActionResult Edit(Todo todo)
+    public IActionResult Edit(TodoCategoriesViewModel viewModel)
     {
-      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == todo.Id);
+      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == viewModel.Todo.Id);
       if (todoInDb is null)
       {
         return BadRequest();
       }
 
-      todoInDb.Description = todo.Description;
-      todoInDb.Status = todo.Status;
+      if (!ModelState.IsValid)
+      {
+        viewModel = new TodoCategoriesViewModel
+        {
+          Todo = viewModel.Todo,
+          Categories = _context.Categories.ToList()
+        };
+        return View(viewModel);
+      }
+
+      todoInDb.Description = viewModel.Todo.Description;
+      todoInDb.Status = viewModel.Todo.Status;
+      todoInDb.CategoryId = viewModel.Todo.CategoryId;
 
       _context.SaveChanges();
 
@@ -102,7 +117,9 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Details(int id)
     {
-      var todoInDb = _context.Todoes.SingleOrDefault(t => t.Id == id);
+      var todoInDb = _context.Todoes
+        .Include(t => t.Category)
+        .SingleOrDefault(t => t.Id == id);
       if (todoInDb is null)
       {
         return NotFound();
