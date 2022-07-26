@@ -1,5 +1,6 @@
 ﻿using GCD0901AppDev.Data;
 using GCD0901AppDev.Models;
+using GCD0901AppDev.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,18 +29,27 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Create()
     {
-      return View();
+      var viewModel = new TodoCategoriesViewModel()
+      {
+        Categories = _context.Categories.ToList()
+      };
+      return View(viewModel);
     }
     [HttpPost]
-    public IActionResult Create(Todo todo)
+    public IActionResult Create(TodoCategoriesViewModel viewModel)
     {
       if (!ModelState.IsValid)
       {
-        return View();
+        viewModel = new TodoCategoriesViewModel
+        {
+          Categories = _context.Categories.ToList()
+        };
+        return View(viewModel);
       }
       var newTodo = new Todo
       {
-        Description = todo.Description
+        Description = viewModel.Todo.Description,
+        CategoryId = viewModel.Todo.CategoryId
       };
 
       _context.Add(newTodo);
