@@ -15,8 +15,8 @@
   {
     if (User.IsInRole(Role.ADMIN))
     {
-      <p>Manage Category</p>
-      <p>Manage User Accounts</p>
+      <a asp-controller="Categories" asp-action="Index" class="btn btn-primary">Manage Categories</a>
+      <a asp-controller="Admin" asp-action="Index" class="btn btn-dark">Manage Accounts</a>
     }
     if (User.IsInRole(Role.USER))
     {
