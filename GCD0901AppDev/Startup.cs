@@ -3,6 +3,7 @@ using GCD0901AppDev.Models;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,8 @@ namespace GCD0901AppDev
           options.UseSqlServer(
               Configuration.GetConnectionString("DefaultConnection")));
       services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-          .AddEntityFrameworkStores<ApplicationDbContext>();
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>();
       services.AddControllersWithViews();
       services.AddRazorPages();
     }

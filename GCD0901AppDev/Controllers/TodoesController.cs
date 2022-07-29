@@ -1,5 +1,6 @@
 ﻿using GCD0901AppDev.Data;
 using GCD0901AppDev.Models;
+using GCD0901AppDev.Utils;
 using GCD0901AppDev.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using System.Linq;
 
 namespace GCD0901AppDev.Controllers
 {
-  [Authorize]
+  [Authorize(Roles = Role.USER)]
   public class TodoesController : Controller
   {
     private ApplicationDbContext _context;

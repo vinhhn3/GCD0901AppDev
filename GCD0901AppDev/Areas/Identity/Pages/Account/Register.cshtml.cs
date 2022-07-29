@@ -25,17 +25,20 @@ namespace GCD0901AppDev.Areas.Identity.Pages.Account
   {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly ILogger<RegisterModel> _logger;
     private readonly IEmailSender _emailSender;
 
     public RegisterModel(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
         ILogger<RegisterModel> logger,
         IEmailSender emailSender)
     {
       _userManager = userManager;
       _signInManager = signInManager;
+      _roleManager = roleManager;
       _logger = logger;
       _emailSender = emailSender;
     }
@@ -100,7 +103,7 @@ namespace GCD0901AppDev.Areas.Identity.Pages.Account
         if (result.Succeeded)
         {
           _logger.LogInformation("User created a new account with password.");
-
+          IdentityResult roleresult = await _userManager.AddToRoleAsync(user, Input.Role);
           var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
           code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
           var callbackUrl = Url.Page(
@@ -129,6 +132,13 @@ namespace GCD0901AppDev.Areas.Identity.Pages.Account
       }
 
       // If we got this far, something failed, redisplay form
+
+      RoleSelectList = new SelectList(new List<string>
+          {
+            Role.ADMIN,
+            Role.USER
+          }
+         );
       return Page();
     }
   }
