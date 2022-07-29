@@ -16,8 +16,8 @@ namespace GCD0901AppDev.Controllers
   public class TodoesController : Controller
   {
     private ApplicationDbContext _context;
-    private readonly UserManager<IdentityUser> _userManager;
-    public TodoesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+    private readonly UserManager<ApplicationUser> _userManager;
+    public TodoesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
       _context = context;
       _userManager = userManager;
