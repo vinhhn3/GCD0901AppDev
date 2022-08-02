@@ -32,7 +32,10 @@
       <td>@item.Description</td>
       <td>@item.CreatedAt.ToShortDateString()</td>
       <td>@item.Status.ToString()</td>
-      <td>@item.Category.Description</td>
+      <td><a 
+        asp-action="ByCategory" 
+        asp-route-id="@item.CategoryId"
+        asp-controller="Todoes">@item.Category.Description</a></td>
       <td>
         <a asp-controller="Todoes" asp-action="Edit" asp-route-id=@item.Id class="btn btn-info"> 
           Edit
