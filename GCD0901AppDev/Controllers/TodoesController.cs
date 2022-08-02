@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GCD0901AppDev.Controllers
 {
@@ -56,7 +58,7 @@ namespace GCD0901AppDev.Controllers
       return View(viewModel);
     }
     [HttpPost]
-    public IActionResult Create(TodoCategoriesViewModel viewModel)
+    public async Task<IActionResult> Create(TodoCategoriesViewModel viewModel)
     {
       if (!ModelState.IsValid)
       {
@@ -68,15 +70,21 @@ namespace GCD0901AppDev.Controllers
       }
 
       var currentUserId = _userManager.GetUserId(User);
-      var newTodo = new Todo
-      {
-        Description = viewModel.Todo.Description,
-        CategoryId = viewModel.Todo.CategoryId,
-        UserId = currentUserId
-      };
 
-      _context.Add(newTodo);
-      _context.SaveChanges();
+      using (var memoryStream = new MemoryStream())
+      {
+        await viewModel.FormFile.CopyToAsync(memoryStream);
+        var newTodo = new Todo
+        {
+          Description = viewModel.Todo.Description,
+          CategoryId = viewModel.Todo.CategoryId,
+          UserId = currentUserId,
+          ImageData = memoryStream.ToArray()
+        };
+        _context.Add(newTodo);
+        await _context.SaveChangesAsync();
+      }
+
       return RedirectToAction("Index");
     }
     [HttpGet]

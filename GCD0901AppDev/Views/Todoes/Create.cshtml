@@ -3,7 +3,7 @@
 
 <h1>Create a new Todo</h1>
 
-<form asp-controller="Todoes" asp-action="Create" method="post">
+<form enctype="multipart/form-data" asp-controller="Todoes" asp-action="Create" method="post">
   <div class="form-group">
     <label>Description</label>
     <input asp-for="Todo.Description" class="form-control" placeholder="Todo Description ..." />
@@ -15,6 +15,16 @@
         asp-items="@(new SelectList(Model.Categories, "Id", "Description"))" 
         class="form-control">
       </select>
+  </div>
+  <div class="form-group">
+        <dl>
+        <dt>
+            <label asp-for="@Model.FormFile"></label>
+        </dt>
+        <dd>
+            <input asp-for="@Model.FormFile" type="file">
+        </dd>
+    </dl>
   </div>
 
   </div>
