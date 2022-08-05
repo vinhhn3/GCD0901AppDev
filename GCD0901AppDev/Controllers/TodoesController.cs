@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -80,20 +79,9 @@ namespace GCD0901AppDev.Controllers
 
       var currentUserId = _userManager.GetUserId(User);
 
-      using (var memoryStream = new MemoryStream())
-      {
-        await viewModel.FormFile.CopyToAsync(memoryStream);
-        var newTodo = new Todo
-        {
-          Description = viewModel.Todo.Description,
-          CategoryId = viewModel.Todo.CategoryId,
-          UserId = currentUserId,
-          ImageData = memoryStream.ToArray()
-        };
-        _context.Add(newTodo);
-        await _context.SaveChangesAsync();
-      }
+      bool isCreated = await _todoRepos.CreateTodoWithUserId(viewModel, currentUserId);
 
+      if (!isCreated) return BadRequest();
       return RedirectToAction("Index");
     }
     [HttpGet]
