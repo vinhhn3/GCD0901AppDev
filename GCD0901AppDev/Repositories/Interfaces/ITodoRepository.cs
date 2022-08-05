@@ -9,8 +9,9 @@ namespace GCD0901AppDev.Repositories.Interfaces
   {
     IEnumerable<Todo> GetAll();
     bool CreateTodo(TodoCategoriesViewModel viewModel);
-    bool DeleteById(int id);
+    bool DeleteByIdAndUserId(int id, string userId);
     Todo GetById(int id);
+    Todo GetByTodoIdAndUserId(int id, string userId);
     bool EditTodo(TodoCategoriesViewModel viewModel);
     IEnumerable<Todo> GetTodoesByCategoryId(int id);
   }

@@ -22,9 +22,16 @@ namespace GCD0901AppDev.Repositories
       throw new System.NotImplementedException();
     }
 
-    public bool DeleteById(int id)
+
+
+    public bool DeleteByIdAndUserId(int id, string userId)
     {
-      throw new System.NotImplementedException();
+      var todoInDb = GetByTodoIdAndUserId(id, userId);
+      if (todoInDb == null) return false;
+
+      _context.Todoes.Remove(todoInDb);
+      _context.SaveChanges();
+      return true;
     }
 
     public bool EditTodo(TodoCategoriesViewModel viewModel)
@@ -41,7 +48,16 @@ namespace GCD0901AppDev.Repositories
 
     public Todo GetById(int id)
     {
-      throw new System.NotImplementedException();
+      return _context.Todoes
+        .Include(t => t.Category)
+        .SingleOrDefault(t => t.Id == id);
+    }
+
+    public Todo GetByTodoIdAndUserId(int id, string userId)
+    {
+      return _context.Todoes
+        .Include(t => t.Category)
+        .SingleOrDefault(t => t.Id == id && t.UserId == userId);
     }
 
     public IEnumerable<Todo> GetTodoesByCategoryId(int id)

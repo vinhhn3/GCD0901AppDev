@@ -99,15 +99,9 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Delete(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _context.Todoes.SingleOrDefault(
-        t => t.Id == id && t.UserId == currentUserId);
-      if (todoInDb is null)
-      {
-        return NotFound();
-      }
+      var isDeleted = _todoRepos.DeleteByIdAndUserId(id, currentUserId);
 
-      _context.Todoes.Remove(todoInDb);
-      _context.SaveChanges();
+      if (!isDeleted) return NotFound();
       return RedirectToAction("Index");
     }
 
@@ -163,9 +157,7 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Details(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _context.Todoes
-        .Include(t => t.Category)
-        .SingleOrDefault(t => t.Id == id && t.UserId == currentUserId);
+      var todoInDb = _todoRepos.GetByTodoIdAndUserId(id, currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
