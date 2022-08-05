@@ -98,8 +98,7 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Edit(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _context.Todoes.SingleOrDefault(
-        t => t.Id == id && t.UserId == currentUserId);
+      var todoInDb = _todoRepos.GetByTodoIdAndUserId(id, currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
@@ -107,7 +106,7 @@ namespace GCD0901AppDev.Controllers
       var viewModel = new TodoCategoriesViewModel
       {
         Todo = todoInDb,
-        Categories = _context.Categories.ToList()
+        Categories = _categoryRepos.GetAll()
       };
       return View(viewModel);
     }
@@ -115,30 +114,19 @@ namespace GCD0901AppDev.Controllers
     [HttpPost]
     public IActionResult Edit(TodoCategoriesViewModel viewModel)
     {
-      var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _context.Todoes.SingleOrDefault(
-        t => t.Id == viewModel.Todo.Id && t.UserId == currentUserId);
-      if (todoInDb is null)
-      {
-        return BadRequest();
-      }
-
       if (!ModelState.IsValid)
       {
         viewModel = new TodoCategoriesViewModel
         {
           Todo = viewModel.Todo,
-          Categories = _context.Categories.ToList()
+          Categories = _categoryRepos.GetAll()
         };
         return View(viewModel);
       }
+      var currentUserId = _userManager.GetUserId(User);
+      var isEdited = _todoRepos.EditTodo(viewModel, currentUserId);
 
-      todoInDb.Description = viewModel.Todo.Description;
-      todoInDb.Status = viewModel.Todo.Status;
-      todoInDb.CategoryId = viewModel.Todo.CategoryId;
-
-      _context.SaveChanges();
-
+      if (!isEdited) return BadRequest();
       return RedirectToAction("Index");
     }
 
@@ -163,7 +151,6 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult ByCategory(int id)
     {
-
       var categoryInDb = _categoryRepos.GetById(id);
 
       if (categoryInDb == null)

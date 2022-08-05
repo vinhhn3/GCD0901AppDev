@@ -13,7 +13,7 @@ namespace GCD0901AppDev.Repositories.Interfaces
     bool DeleteByIdAndUserId(int id, string userId);
     Todo GetById(int id);
     Todo GetByTodoIdAndUserId(int id, string userId);
-    bool EditTodo(TodoCategoriesViewModel viewModel);
+    bool EditTodo(TodoCategoriesViewModel viewModel, string userId);
     IEnumerable<Todo> GetTodoesByCategoryId(int id);
   }
 }

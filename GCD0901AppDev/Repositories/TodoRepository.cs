@@ -51,9 +51,16 @@ namespace GCD0901AppDev.Repositories
       return true;
     }
 
-    public bool EditTodo(TodoCategoriesViewModel viewModel)
+    public bool EditTodo(TodoCategoriesViewModel viewModel, string userId)
     {
-      throw new System.NotImplementedException();
+      var todoInDb = GetByTodoIdAndUserId(viewModel.Todo.Id, userId);
+      if (todoInDb == null) return false;
+
+      todoInDb.Description = viewModel.Todo.Description;
+      todoInDb.Status = viewModel.Todo.Status;
+      todoInDb.CategoryId = viewModel.Todo.CategoryId;
+
+      return _context.SaveChanges() > 0;
     }
 
     public IEnumerable<Todo> GetAll()
