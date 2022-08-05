@@ -1,7 +1,8 @@
-﻿using GCD0901AppDev.Models;
+﻿using GCD0901AppDev.DTOs.Requests;
+using GCD0901AppDev.DTOs.Responses;
+using GCD0901AppDev.Models;
 using GCD0901AppDev.Repositories.Interfaces;
 using GCD0901AppDev.Utils;
-using GCD0901AppDev.ViewModels;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -50,27 +51,27 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult Create()
     {
-      var viewModel = new TodoCategoriesViewModel()
+      var viewModel = new CreateTodoRequest()
       {
         Categories = _categoryRepos.GetAll()
       };
       return View(viewModel);
     }
     [HttpPost]
-    public async Task<IActionResult> Create(TodoCategoriesViewModel viewModel)
+    public async Task<IActionResult> Create(CreateTodoRequest model)
     {
       if (!ModelState.IsValid)
       {
-        viewModel = new TodoCategoriesViewModel
+        model = new CreateTodoRequest
         {
           Categories = _categoryRepos.GetAll()
         };
-        return View(viewModel);
+        return View(model);
       }
 
       var currentUserId = _userManager.GetUserId(User);
 
-      bool isCreated = await _todoRepos.CreateTodo(viewModel, currentUserId);
+      bool isCreated = await _todoRepos.CreateTodo(model, currentUserId);
 
       if (!isCreated) return BadRequest();
       return RedirectToAction("Index");
@@ -94,28 +95,34 @@ namespace GCD0901AppDev.Controllers
       {
         return NotFound();
       }
-      var viewModel = new TodoCategoriesViewModel
+      var model = new EditTodoRequest
       {
-        Todo = todoInDb,
+        Id = todoInDb.Id,
+        Description = todoInDb.Description,
+        CategoryId = todoInDb.CategoryId,
+        Status = todoInDb.Status,
         Categories = _categoryRepos.GetAll()
       };
-      return View(viewModel);
+      return View(model);
     }
 
     [HttpPost]
-    public IActionResult Edit(TodoCategoriesViewModel viewModel)
+    public IActionResult Edit(EditTodoRequest model)
     {
       if (!ModelState.IsValid)
       {
-        viewModel = new TodoCategoriesViewModel
+        model = new EditTodoRequest
         {
-          Todo = viewModel.Todo,
+          Id = model.Id,
+          Description = model.Description,
+          CategoryId = model.CategoryId,
+          Status = model.Status,
           Categories = _categoryRepos.GetAll()
         };
-        return View(viewModel);
+        return View(model);
       }
       var currentUserId = _userManager.GetUserId(User);
-      var isEdited = _todoRepos.EditTodo(viewModel, currentUserId);
+      var isEdited = _todoRepos.EditTodo(model, currentUserId);
 
       if (!isEdited) return BadRequest();
       return RedirectToAction("Index");
@@ -131,12 +138,16 @@ namespace GCD0901AppDev.Controllers
         return NotFound();
       }
 
-      string imageBase64Data = Convert.ToBase64String(todoInDb.ImageData);
+      var response = new DetailsTodoResponse
+      {
+        Description = todoInDb.Description,
+        CreatedAt = todoInDb.CreatedAt,
+        Status = todoInDb.Status,
+        CategoryDescription = todoInDb.Category.Description,
+        ImageUrl = ConvertByteArrayToStringBase64(todoInDb.ImageData)
+      };
 
-      string image = string.Format("data:image/jpg;base64, {0}", imageBase64Data);
-      ViewBag.ImageData = image;
-
-      return View(todoInDb);
+      return View(response);
     }
 
     [HttpGet]
@@ -159,6 +170,14 @@ namespace GCD0901AppDev.Controllers
       return category.Todoes
         .Where(t => t.UserId == userId)
         .ToList();
+    }
+
+    [NonAction]
+    private string ConvertByteArrayToStringBase64(byte[] imageArray)
+    {
+      string imageBase64Data = Convert.ToBase64String(imageArray);
+
+      return string.Format("data:image/jpg;base64, {0}", imageBase64Data);
     }
   }
 }

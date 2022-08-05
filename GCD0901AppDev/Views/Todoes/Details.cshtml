@@ -1,4 +1,5 @@
-﻿@model Todo
+﻿@using GCD0901AppDev.DTOs.Responses
+@model DetailsTodoResponse
 
 <div class="form-group">
   <a asp-controller="Todoes" asp-action="Index" class="btn btn-primary">
@@ -7,12 +8,12 @@
 </div>
 
 <div class="card" style="width:200px">
-  <img src="@ViewBag.ImageData"/>
+  <img src="@Model.ImageUrl"/>
   <div class="card-body">
     <h4 class="card-title">@Model.Description</h4>
     <p class="card-text">Created At: @Model.CreatedAt.ToShortDateString()</p>
     <p class="card-text">Status: @Model.Status.ToString()</p>
-    <p class="card-text">Category: @Model.Category.Description</p>
+    <p class="card-text">Category: @Model.CategoryDescription</p>
 
   </div>
 </div>

@@ -1,7 +1,7 @@
 ﻿using GCD0901AppDev.Data;
+using GCD0901AppDev.DTOs.Requests;
 using GCD0901AppDev.Models;
 using GCD0901AppDev.Repositories.Interfaces;
-using GCD0901AppDev.ViewModels;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -20,16 +20,16 @@ namespace GCD0901AppDev.Repositories
       _context = context;
     }
 
-    public async Task<bool> CreateTodo(TodoCategoriesViewModel viewModel, string userId)
+    public async Task<bool> CreateTodo(CreateTodoRequest model, string userId)
     {
       int result;
       using (var memoryStream = new MemoryStream())
       {
-        await viewModel.FormFile.CopyToAsync(memoryStream);
+        await model.FormFile.CopyToAsync(memoryStream);
         var newTodo = new Todo
         {
-          Description = viewModel.Todo.Description,
-          CategoryId = viewModel.Todo.CategoryId,
+          Description = model.Description,
+          CategoryId = model.CategoryId,
           UserId = userId,
           ImageData = memoryStream.ToArray()
         };
@@ -50,14 +50,14 @@ namespace GCD0901AppDev.Repositories
       return true;
     }
 
-    public bool EditTodo(TodoCategoriesViewModel viewModel, string userId)
+    public bool EditTodo(EditTodoRequest model, string userId)
     {
-      var todoInDb = GetTodo(viewModel.Todo.Id, userId);
+      var todoInDb = GetTodo(model.Id, userId);
       if (todoInDb == null) return false;
 
-      todoInDb.Description = viewModel.Todo.Description;
-      todoInDb.Status = viewModel.Todo.Status;
-      todoInDb.CategoryId = viewModel.Todo.CategoryId;
+      todoInDb.Description = model.Description;
+      todoInDb.Status = model.Status;
+      todoInDb.CategoryId = model.CategoryId;
 
       return _context.SaveChanges() > 0;
     }
