@@ -1,5 +1,7 @@
 using GCD0901AppDev.Data;
 using GCD0901AppDev.Models;
+using GCD0901AppDev.Repositories;
+using GCD0901AppDev.Repositories.Interfaces;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +32,9 @@ namespace GCD0901AppDev
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>();
       services.AddControllersWithViews();
+
+      // Tell the app to use the Service
+      services.AddScoped<ITodoRepository, TodoRepository>();
       services.AddRazorPages();
     }
 

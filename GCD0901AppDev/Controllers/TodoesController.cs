@@ -1,5 +1,6 @@
 ﻿using GCD0901AppDev.Data;
 using GCD0901AppDev.Models;
+using GCD0901AppDev.Repositories.Interfaces;
 using GCD0901AppDev.Utils;
 using GCD0901AppDev.ViewModels;
 
@@ -21,10 +22,17 @@ namespace GCD0901AppDev.Controllers
   {
     private ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
-    public TodoesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    private ITodoRepository _todoRepos;
+    public TodoesController(
+      ApplicationDbContext context,
+      UserManager<ApplicationUser> userManager,
+      ITodoRepository todoRepos
+
+      )
     {
       _context = context;
       _userManager = userManager;
+      _todoRepos = todoRepos;
     }
     [HttpGet]
     public IActionResult Index(string category)
@@ -32,18 +40,17 @@ namespace GCD0901AppDev.Controllers
       var currentUserId = _userManager.GetUserId(User);
       if (!string.IsNullOrWhiteSpace(category))
       {
-        var result = _context.Todoes
-          .Include(t => t.Category)
+        var result = _todoRepos
+          .GetAll()
           .Where(t => t.Category.Description.Equals(category)
-              && t.UserId == currentUserId
-          )
+            && t.UserId == currentUserId)
           .ToList();
 
         return View(result);
       }
 
-      IEnumerable<Todo> todoes = _context.Todoes
-        .Include(t => t.Category)
+      IEnumerable<Todo> todoes = _todoRepos
+        .GetAll()
         .Where(t => t.UserId == currentUserId)
         .ToList();
       return View(todoes);
