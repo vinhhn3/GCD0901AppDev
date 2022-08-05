@@ -7,7 +7,6 @@ using GCD0901AppDev.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
@@ -23,16 +22,18 @@ namespace GCD0901AppDev.Controllers
     private ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private ITodoRepository _todoRepos;
+    private ICategoryRepository _categoryRepos;
     public TodoesController(
       ApplicationDbContext context,
       UserManager<ApplicationUser> userManager,
-      ITodoRepository todoRepos
-
+      ITodoRepository todoRepos,
+      ICategoryRepository categoryRepos
       )
     {
       _context = context;
       _userManager = userManager;
       _todoRepos = todoRepos;
+      _categoryRepos = categoryRepos;
     }
     [HttpGet]
     public IActionResult Index(string category)
@@ -61,7 +62,7 @@ namespace GCD0901AppDev.Controllers
     {
       var viewModel = new TodoCategoriesViewModel()
       {
-        Categories = _context.Categories.ToList()
+        Categories = _categoryRepos.GetAll()
       };
       return View(viewModel);
     }
@@ -72,7 +73,7 @@ namespace GCD0901AppDev.Controllers
       {
         viewModel = new TodoCategoriesViewModel
         {
-          Categories = _context.Categories.ToList()
+          Categories = _categoryRepos.GetAll()
         };
         return View(viewModel);
       }
@@ -174,9 +175,8 @@ namespace GCD0901AppDev.Controllers
     [HttpGet]
     public IActionResult ByCategory(int id)
     {
-      var categoryInDb = _context.Categories
-        .Include(t => t.Todoes)
-        .SingleOrDefault(t => t.Id == id);
+
+      var categoryInDb = _categoryRepos.GetById(id);
 
       if (categoryInDb == null)
       {

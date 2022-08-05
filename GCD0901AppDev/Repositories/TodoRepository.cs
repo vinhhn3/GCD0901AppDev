@@ -22,8 +22,6 @@ namespace GCD0901AppDev.Repositories
       throw new System.NotImplementedException();
     }
 
-
-
     public bool DeleteByIdAndUserId(int id, string userId)
     {
       var todoInDb = GetByTodoIdAndUserId(id, userId);

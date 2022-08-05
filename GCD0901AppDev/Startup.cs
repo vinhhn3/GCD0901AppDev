@@ -35,6 +35,7 @@ namespace GCD0901AppDev
 
       // Tell the app to use the Service
       services.AddScoped<ITodoRepository, TodoRepository>();
+      services.AddScoped<ICategoryRepository, CategoryRepository>();
       services.AddRazorPages();
     }
 
