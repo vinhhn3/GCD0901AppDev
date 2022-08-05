@@ -1,5 +1,4 @@
-﻿using GCD0901AppDev.Data;
-using GCD0901AppDev.Models;
+﻿using GCD0901AppDev.Models;
 using GCD0901AppDev.Repositories.Interfaces;
 using GCD0901AppDev.Utils;
 using GCD0901AppDev.ViewModels;
@@ -18,18 +17,15 @@ namespace GCD0901AppDev.Controllers
   [Authorize(Roles = Role.USER)]
   public class TodoesController : Controller
   {
-    private ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private ITodoRepository _todoRepos;
     private ICategoryRepository _categoryRepos;
     public TodoesController(
-      ApplicationDbContext context,
       UserManager<ApplicationUser> userManager,
       ITodoRepository todoRepos,
       ICategoryRepository categoryRepos
       )
     {
-      _context = context;
       _userManager = userManager;
       _todoRepos = todoRepos;
       _categoryRepos = categoryRepos;
@@ -41,18 +37,13 @@ namespace GCD0901AppDev.Controllers
       if (!string.IsNullOrWhiteSpace(category))
       {
         var result = _todoRepos
-          .GetAll()
-          .Where(t => t.Category.Description.Equals(category)
-            && t.UserId == currentUserId)
-          .ToList();
+          .GetAll(currentUserId, category);
 
         return View(result);
       }
 
       IEnumerable<Todo> todoes = _todoRepos
-        .GetAll()
-        .Where(t => t.UserId == currentUserId)
-        .ToList();
+        .GetAll(currentUserId);
       return View(todoes);
     }
 
@@ -79,7 +70,7 @@ namespace GCD0901AppDev.Controllers
 
       var currentUserId = _userManager.GetUserId(User);
 
-      bool isCreated = await _todoRepos.CreateTodoWithUserId(viewModel, currentUserId);
+      bool isCreated = await _todoRepos.CreateTodo(viewModel, currentUserId);
 
       if (!isCreated) return BadRequest();
       return RedirectToAction("Index");
@@ -88,7 +79,7 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Delete(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var isDeleted = _todoRepos.DeleteByIdAndUserId(id, currentUserId);
+      var isDeleted = _todoRepos.DeleteTodo(id, currentUserId);
 
       if (!isDeleted) return NotFound();
       return RedirectToAction("Index");
@@ -98,7 +89,7 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Edit(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _todoRepos.GetByTodoIdAndUserId(id, currentUserId);
+      var todoInDb = _todoRepos.GetTodo(id, currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
@@ -134,7 +125,7 @@ namespace GCD0901AppDev.Controllers
     public IActionResult Details(int id)
     {
       var currentUserId = _userManager.GetUserId(User);
-      var todoInDb = _todoRepos.GetByTodoIdAndUserId(id, currentUserId);
+      var todoInDb = _todoRepos.GetTodo(id, currentUserId);
       if (todoInDb is null)
       {
         return NotFound();
@@ -158,10 +149,16 @@ namespace GCD0901AppDev.Controllers
         return NotFound();
       }
       var currentUserId = _userManager.GetUserId(User);
-      var todoesByCategoryName = categoryInDb.Todoes
-        .Where(t => t.UserId == currentUserId)
-        .ToList();
+      var todoesByCategoryName = GetTodoesFromCategoryAndUserId(categoryInDb, currentUserId);
       return View("Index", todoesByCategoryName);
+    }
+
+    [NonAction]
+    private List<Todo> GetTodoesFromCategoryAndUserId(Category category, string userId)
+    {
+      return category.Todoes
+        .Where(t => t.UserId == userId)
+        .ToList();
     }
   }
 }

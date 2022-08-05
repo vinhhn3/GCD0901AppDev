@@ -20,8 +20,7 @@ namespace GCD0901AppDev.Repositories
       _context = context;
     }
 
-
-    public async Task<bool> CreateTodoWithUserId(TodoCategoriesViewModel viewModel, string userId)
+    public async Task<bool> CreateTodo(TodoCategoriesViewModel viewModel, string userId)
     {
       int result;
       using (var memoryStream = new MemoryStream())
@@ -41,9 +40,9 @@ namespace GCD0901AppDev.Repositories
 
     }
 
-    public bool DeleteByIdAndUserId(int id, string userId)
+    public bool DeleteTodo(int id, string userId)
     {
-      var todoInDb = GetByTodoIdAndUserId(id, userId);
+      var todoInDb = GetTodo(id, userId);
       if (todoInDb == null) return false;
 
       _context.Todoes.Remove(todoInDb);
@@ -53,7 +52,7 @@ namespace GCD0901AppDev.Repositories
 
     public bool EditTodo(TodoCategoriesViewModel viewModel, string userId)
     {
-      var todoInDb = GetByTodoIdAndUserId(viewModel.Todo.Id, userId);
+      var todoInDb = GetTodo(viewModel.Todo.Id, userId);
       if (todoInDb == null) return false;
 
       todoInDb.Description = viewModel.Todo.Description;
@@ -70,21 +69,37 @@ namespace GCD0901AppDev.Repositories
         .ToList();
     }
 
-    public Todo GetById(int id)
+    public IEnumerable<Todo> GetAll(string userId)
+    {
+      return _context.Todoes
+        .Include(t => t.Category)
+        .Where(t => t.UserId == userId)
+        .ToList();
+    }
+
+    public IEnumerable<Todo> GetAll(string userId, string categoryName)
+    {
+      return _context.Todoes
+        .Include(t => t.Category)
+        .Where(t => t.UserId == userId && t.Category.Description == categoryName)
+        .ToList();
+    }
+
+    public Todo GetTodo(int id)
     {
       return _context.Todoes
         .Include(t => t.Category)
         .SingleOrDefault(t => t.Id == id);
     }
 
-    public Todo GetByTodoIdAndUserId(int id, string userId)
+    public Todo GetTodo(int id, string userId)
     {
       return _context.Todoes
         .Include(t => t.Category)
         .SingleOrDefault(t => t.Id == id && t.UserId == userId);
     }
 
-    public IEnumerable<Todo> GetTodoesByCategoryId(int id)
+    public IEnumerable<Todo> GetAllByCategoryId(int id)
     {
       throw new System.NotImplementedException();
     }
